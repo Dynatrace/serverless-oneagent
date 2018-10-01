@@ -1,0 +1,15 @@
+{
+  "name": "aws-lambda-node.js",
+  "version": "1.0.0",
+  "description": "AWS Lambda serverless example",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {},
+  "dependencies": {
+    "left-pad": "^1.3.0"
+  }
+}

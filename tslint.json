@@ -1,0 +1,101 @@
+{
+	"extends": "tslint:recommended",
+	"rules": {
+		"align": [
+			true,
+			"members",
+			"statements"
+		],
+		"ban-types": false,
+		"comment-format": false,
+		"deprecation": true,
+		"indent": [
+			true,
+			"tabs"
+		],
+		"interface-name": false,
+		"jsdoc-format": false,
+		"max-line-length": [
+			true,
+			200
+		],
+		"max-classes-per-file": false,
+		"member-ordering": [
+			true,
+			{
+				"order": [
+					{
+						"name": "public",
+						"kinds": [
+							"public-static-field",
+							"public-static-method",
+							"public-instance-field",
+							"public-constructor",
+							"public-instance-method"
+						]
+					},
+					{
+						"name": "protected",
+						"kinds": [
+							"protected-static-field",
+							"protected-static-method",
+							"protected-instance-field",
+							"protected-constructor",
+							"protected-instance-method"
+						]
+					},
+					{
+						"name": "private",
+						"kinds": [
+							"private-static-field",
+							"private-static-method",
+							"private-instance-field",
+							"private-constructor",
+							"private-instance-method"
+						]
+					}
+				]
+			}
+		],
+		"no-bitwise": false,
+		"no-consecutive-blank-lines": [
+			true,
+			5
+		],
+		"no-namespace": false,
+		"no-unnecessary-type-assertion": true,
+		"no-unused-expression": [true, "allow-new"],
+		"object-literal-shorthand": false,
+		"object-literal-sort-keys": false,
+		"ordered-imports": false,
+		"trailing-comma": [
+			true,
+			{
+				"singleline": "never",
+				"multiline": "never"
+			}
+		]
+	},
+	"jsRules": {
+		"indent": [
+			true,
+			"tabs"
+		],
+		"max-line-length": [
+			true,
+			200
+		],
+		"no-consecutive-blank-lines": [
+			true,
+			5
+		],
+		"object-literal-sort-keys": false,
+		"trailing-comma": [
+			true,
+			{
+				"singleline": "never",
+				"multiline": "never"
+			}
+		]
+	}
+}

@@ -1,0 +1,50 @@
+{
+  "name": "@dynatrace/serverless-oneagent",
+  "version": "1.0.0",
+  "description": "Dynatrace OneAgent serverless framework plugin",
+  "main": "dist",
+  "scripts": {},
+  "author": "Dynatrace",
+  "license": "MIT",
+  "devDependencies": {
+    "@dynatrace/serverless-oneagent": "file:.",
+    "@types/lodash": "^4.14.116",
+    "@types/node": "10.9.4",
+    "@types/npm": "^2.0.29",
+    "npm": "^6.4.1",
+    "serverless": "^1.32.0",
+    "serverless-offline": "^3.25.15",
+    "serverless-webpack": "^5.2.0",
+    "tslint": "^5.11.0",
+    "typescript": "^3.0.3",
+    "webpack": "^4.20.2"
+  },
+  "dependencies": {
+    "lodash": "^4.17.11"
+  },
+  "engines": {
+    "node": ">=6",
+    "npm": ">=2"
+  },
+  "keywords": [
+    "dynatrace",
+    "node.js",
+    "oneagent",
+    "performance",
+    "monitoring",
+    "cloudfoundry",
+    "heroku",
+    "bluemix",
+    "ruxit",
+    "paas",
+    "pivotal",
+    "hp helion",
+    "atos",
+    "ge predix",
+    "lambda",
+    "aws",
+    "serverless",
+    "serverless-webpack",
+    "webpack"
+  ]
+}

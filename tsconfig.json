@@ -1,0 +1,23 @@
+{
+	"compilerOptions": {
+		"declaration": false,
+		"lib": [ "es5", "es2015.promise", "es2015.collection", "es2015.core", "es2015.symbol" ],
+		"module": "commonjs",
+		"newLine": "LF",
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitReturns": true,
+		"strict": true,
+		"outDir": "dist",
+		"rootDir": "src",
+		"sourceMap": true,
+		"target": "es6",
+		"forceConsistentCasingInFileNames": true,
+		"allowJs": true,
+		"noUnusedLocals": true		
+	},
+	"include": [
+		"src/**/*.ts"
+	],
+	"exclude": [
+	]
+}
