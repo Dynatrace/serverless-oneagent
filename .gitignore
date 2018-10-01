@@ -6,6 +6,8 @@ npm-debug.log*
 /test/data/*
 .vscode/
 
+dist/
+
 # Runtime data
 pids
 *.pid
