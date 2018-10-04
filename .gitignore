@@ -7,6 +7,8 @@ npm-debug.log*
 .vscode/
 
 dist/
+.serverless
+.webpack
 
 # Runtime data
 pids
