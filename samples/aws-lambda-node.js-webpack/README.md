@@ -9,8 +9,8 @@ Please modify value of `DT_LAMBDA_OPTIONS` environment variable in `serverless.y
       DT_LAMBDA_OPTIONS: '{"dynatraceTagPropertyPath":"headers.x-dynatrace","server":"...","tenant":"...","tenanttoken":"..."}'
 ```
 
-Alternatively, options can be specified with `--dt-lambda-options` command line argument.
+Alternatively, options can be specified with `--dt-oneagent-options` command line argument.
 
 ```shell
-serverless deploy --dt-lambda-options='{"dynatraceTagPropertyPath":"headers.x-dynatrace","server":"...","tenant":"...","tenanttoken":"..."}'
+serverless deploy --dt-oneagent-options='{"dynatraceTagPropertyPath":"headers.x-dynatrace","server":"...","tenant":"...","tenanttoken":"..."}'
 ```

@@ -73,7 +73,7 @@ namespace Serverless {
 	export interface Options {
 		v?: boolean;
 		verbose?: boolean;
-		"dt-lambda-options"?: string;
+		"dt-oneagent-options"?: string;
 		"dt-debug"?: boolean;
 	}
 
@@ -204,7 +204,7 @@ class DynatraceOneAgentPlugin {
 		this.determineDeploymentMode();
 
 		this.env = {
-			agentOptions: options["dt-lambda-options"],
+			agentOptions: options["dt-oneagent-options"],
 			debug: options["dt-debug"] !== undefined
 		};
 
@@ -547,7 +547,7 @@ class DynatraceOneAgentPlugin {
 
 	/**
 	 * set OneAgent options in environment
-	 * OneAgent options can be passed by command line with --dt-lambda-options='...'
+	 * OneAgent options can be passed by command line with --dt-oneagent-options='...'
 	 */
 	private setDtLambdaOptions() {
 		if (this.env.agentOptions !== undefined) {

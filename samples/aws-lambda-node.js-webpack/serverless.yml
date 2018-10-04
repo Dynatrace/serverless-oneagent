@@ -18,8 +18,8 @@ provider:
   environment:
       # DYNATRACE: 
       # copy options from serverless configuration screen (Deploy Dynatrace > Setup Serverless integration > Node.js)
-      # alternatively, options can be specified on command line with --dt-lambda-options e.g.
-      # $ serverless --dt-lambda-options='...' package
+      # alternatively, options can be specified on command line with --dt-oneagent-options e.g.
+      # $ serverless --dt-oneagent-options='...' package
       DT_LAMBDA_OPTIONS: '{"dynatraceTagPropertyPath":"headers.x-dynatrace","server":"...","tenant":"...","tenanttoken":"..."}'
 
 functions:

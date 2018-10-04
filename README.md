@@ -50,7 +50,7 @@ Thus, the options can be added by extending the `environment` list entries in th
 If you do not want to add OneAgent options to the `serverless.yml` , the options can be specified as a command line argument to serverless (sls) command.
 
 ```shell
-serverless deploy --dt-lambda-options='{"dynatraceTagPropertyPath":"headers.x-dynatrace","server":"...","tenant":"...","tenanttoken":"..."}'
+serverless deploy --dt-oneagent-options='{"dynatraceTagPropertyPath":"headers.x-dynatrace","server":"...","tenant":"...","tenanttoken":"..."}'
 ```
 
 ## Samples
