@@ -32,6 +32,9 @@ import * as _ from "lodash";
 
 // ============================================================================
 
+/*
+ * set of typings for serverless
+ */
 namespace Serverless {
 
 	export interface Instance {
@@ -57,7 +60,7 @@ namespace Serverless {
 		getAllFunctions: () => string[];
 
 		custom?: {
-			"serverless-oneagent"?: PluginConfig,
+			"serverless-oneagent"?: PluginYamlConfig,
 			"webpack"?: ServerlessWebPackConfig
 		};
 	}
@@ -70,11 +73,12 @@ namespace Serverless {
 		};
 	}
 
-	export interface Options {
+	export interface CommandLineOptions {
 		v?: boolean;
 		verbose?: boolean;
 		"dt-oneagent-options"?: string;
 		"dt-debug"?: boolean;
+		"dt-oneagent-module-version"?: string;
 	}
 
 	interface Function {
@@ -116,8 +120,33 @@ interface ServerlessWebPackConfig {
 
 // ============================================================================
 
-interface PluginConfig {
+/**
+ * options that can be specified serverless.yml
+ * custom:
+ * 	serverless-oneagent:
+ */
+interface PluginYamlConfig {
+	/**
+	 * defines the version of the OneAgent npm module to be required
+	 */
 	npmModuleVersion?: string;
+
+	/**
+	 * OneAgent options
+	 * '{"dynatraceTagPropertyPath":"headers.x-dynatrace","server":"...","tenant":"...","tenanttoken":"..."}'
+	 */
+	options?: string;
+
+	/**
+	 * sets DEBUG=dynatrace environment variable in deployed function
+	 */
+	debug?: boolean;
+
+	/**
+	 * verbose output of plugin execution
+	 * enables --verbose mode only for this serverless plugin
+	 */
+	verbose?: boolean;
 }
 
 // ============================================================================
@@ -173,9 +202,29 @@ enum DeploymentMode {
 
 // ============================================================================
 
-interface EnvironmentVars {
-	agentOptions?: string;
+/**
+ * plugin configuration
+ */
+interface Config {
+	/**
+	 * set DEBUG=dynatrace in deployed function
+	 */
 	debug: boolean;
+
+	/**
+	 * enables / disables extended logging
+	 */
+	verbose: boolean;
+
+	/**
+	 * NodeAgent npm module version
+	 */
+	npmModuleVersion?: string;
+
+	/**
+	 * OneAgent option string
+	 */
+	agentOptions: string;
 }
 
 // ============================================================================
@@ -195,18 +244,15 @@ class DynatraceOneAgentPlugin {
 	 * @param serverless
 	 * @param options
 	 */
-	public constructor(private readonly serverless: Serverless.Instance, private readonly options: Serverless.Options) {
+	public constructor(private readonly serverless: Serverless.Instance, options: Serverless.CommandLineOptions) {
 		/*
 		 * restrict this plugin to supported providers
 		 */
 		this.provider = this.serverless.getProvider("aws");
 
-		this.determineDeploymentMode();
+		this.initConfig(options);
 
-		this.env = {
-			agentOptions: options["dt-oneagent-options"],
-			debug: options["dt-debug"] !== undefined
-		};
+		this.determineDeploymentMode();
 
 		if (this.deploymentMode === DeploymentMode.Webpack) {
 			this.preProcessServerlessWebPackDeployment();
@@ -223,18 +269,7 @@ class DynatraceOneAgentPlugin {
 	 * @returns true if --verbose or -v options are set
 	 */
 	private get isVerbose() {
-		return this.options.v || this.options.verbose || false;
-	}
-
-	/**
-	 * @returns this plugin specific configuration
-	 */
-	private get config(): PluginConfig {
-		if (!this.serverless.service || !this.serverless.service.custom || !this.serverless.service.custom["serverless-oneagent"]) {
-			return this.defaultConfig;
-		}
-
-		return this.serverless.service.custom["serverless-oneagent"] || this.defaultConfig;
+		return this.config.verbose;
 	}
 
 	/**
@@ -249,6 +284,18 @@ class DynatraceOneAgentPlugin {
 	 */
 	private get qualifiedNpmModuleName() {
 		return `@dynatrace/oneagent${!this.npmModuleVersion ? "" : "@" + this.npmModuleVersion}`;
+	}
+
+	private initConfig(options: Serverless.CommandLineOptions) {
+		const ymlConfig = (_.get(this.serverless, "service.custom.serverless-oneagent") || {}) as PluginYamlConfig;
+
+		this.config.verbose = ymlConfig.verbose || options.verbose || options.v || false;
+		this.config.debug = ymlConfig.debug || options["dt-debug"] || false;
+		this.config.agentOptions = options["dt-oneagent-options"] || ymlConfig.options || "";
+		if (this.config.agentOptions.length === 0) {
+			throw new Error("OneAgent options neither specified in serverless.yml nor at command line (--dt-oneagent-options)");
+		}
+		this.config.npmModuleVersion = options["dt-oneagent-module-version"] || ymlConfig.npmModuleVersion;
 	}
 
 	/**
@@ -550,19 +597,25 @@ class DynatraceOneAgentPlugin {
 	 * OneAgent options can be passed by command line with --dt-oneagent-options='...'
 	 */
 	private setDtLambdaOptions() {
-		if (this.env.agentOptions !== undefined) {
-			this.logVerbose(`adding environment variable DT_LAMBDA_OPTIONS='${this.env.agentOptions}'`);
-			_.set(this.serverless, "service.provider.environment.DT_LAMBDA_OPTIONS", this.env.agentOptions);
+		if (this.config.agentOptions) {
+			this.logVerbose(`adding environment variable DT_LAMBDA_OPTIONS='${this.config.agentOptions}'`);
+			_.set(this.serverless, "service.provider.environment.DT_LAMBDA_OPTIONS", this.config.agentOptions);
 		}
-		if (this.env.debug !== undefined) {
+		if (this.config.debug) {
 			this.logVerbose(`adding environment variable DEBUG=dynatrace`);
 			_.set(this.serverless, "service.provider.environment.DEBUG", "dynatrace");
 		}
 	}
 
+	/**
+	 * plugin options
+	 */
+	private readonly config: Config = {
+		verbose: false,
+		debug: false,
+		agentOptions: ""
+	};
 	private deploymentMode = DeploymentMode.Undetermined;
-	private readonly defaultConfig: PluginConfig = {};
-	private readonly env: EnvironmentVars;
 	private readonly cannotTailorErrMsg = "could not determine serverless-webpack intermediate files to tailor OneAgent" +
 		"npm module(things will work, but zip package will contain files not need for selected Node.js runtime version";
 }

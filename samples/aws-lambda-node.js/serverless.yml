@@ -1,20 +1,13 @@
 service: dynatrace-oneagent-sample
 
 plugins:
-  # DYNATRACE: 
-  # pull in Dynatrace OneAgent plugin (install first with "npm install --save-dev @dynatrace/serverless-oneagent")
+  # DYNATRACE: pull in Dynatrace OneAgent plugin (install first with "npm install --save-dev @dynatrace/serverless-oneagent")
   - '@dynatrace/serverless-oneagent'
 
 provider:
   name: aws
   runtime: nodejs6.10
   region: eu-central-1
-  environment:
-      # DYNATRACE: 
-      # copy options from serverless configuration screen (Deploy Dynatrace > Setup Serverless integration > Node.js)
-      # alternatively, options can be specified on command line with --dt-oneagent-options e.g.
-      # $ serverless --dt-oneagent-options='...' package
-      DT_LAMBDA_OPTIONS: '{"dynatraceTagPropertyPath":"headers.x-dynatrace","server":"...","tenant":"...","tenanttoken":"..."}'
 
 functions:
   hello:
@@ -23,17 +16,9 @@ functions:
       - http:
           method: GET
           path: hello
-
   second:
     handler: second.hello
     events:
       - http:
           method: GET
           path: second
-
-custom:
-    # DYNATRACE: 
-    # serverless-oneagent plugin configuration. 
-    #   npmModuleVersion: string, optional, valid values are: next
-    serverless-oneagent:
-      npmModuleVersion: next

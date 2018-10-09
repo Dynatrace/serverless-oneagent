@@ -1,17 +1,19 @@
-# Dynatrace OneAgent serverless plugin
+# ![Dynatrace](res/Dynatrace_Logo.png) OneAgent Serverless plugin
 
-This plugin for [serverless framework](https://github.com/serverless/serverless) will add Dynatrace OneAgent automatically to serverless deployments.
+dynatrace-oneagent is a plugin for [serverless framework](https://github.com/serverless/serverless) which will add Dynatrace monitoring automatically to serverless deployments.
+
+> Enable Dynatrace monitoring of your serverless functions in a jiffy.
 
 ## Configuration
 
 The Dynatrace OneAgent serverless plugin will configure serverless and serverless-webpack to bundle [Dynatrace npm module for PaaS](https://github.com/Dynatrace/agent-nodejs).
 
-Enabling your serverless project for Dynatrace OneAgent involves two steps:
+Enabling your serverless project for Dynatrace OneAgent is a two steps process:
 
-1. add the plugin to the serverless project
+1. add plugin to `serverless.yml`
 2. specify OneAgent options
 
-### Add `@dynatrace/serverless-oneagent` to `serverless.yml`
+### Add plugin to `serverless.yml`
 
 Extend the `plugins` list of the projects `serverless.yml` file with `@dynatrace/serverless-oneagent` plugin.
 
@@ -36,15 +38,16 @@ functions:
 
 ### Specify OneAgent options
 
-OneAgent monitoring your serverless function expects its options in `DT_LAMBDA_OPTIONS` environment variable.
+OneAgent options can be specified in `serverless.yml` file or serverless (sls) command line.
 
 > The option string can be obtained from serverless configuration screen (Deploy Dynatrace > Setup Serverless integration).
 
-Thus, the options can be added by extending the `environment` list entries in the projects `serverless.yml`. The option string must be enclosed with single quotes.
+Add following to `serverless.yml`:
 
 ```yaml
-  environment:
-      DT_LAMBDA_OPTIONS: '{"dynatraceTagPropertyPath":"headers.x-dynatrace","server":"...","tenant":"...","tenanttoken":"..."}'
+custom:
+  serverless-oneagent:
+    options: '{"server":"...","tenant":"...", "tenanttoken":"..."}'
 ```
 
 If you do not want to add OneAgent options to the `serverless.yml` , the options can be specified as a command line argument to serverless (sls) command.
@@ -53,12 +56,40 @@ If you do not want to add OneAgent options to the `serverless.yml` , the options
 serverless deploy --dt-oneagent-options='{"dynatraceTagPropertyPath":"headers.x-dynatrace","server":"...","tenant":"...","tenanttoken":"..."}'
 ```
 
+### Options summary
+
+| `serverless.yml`| command line | description |
+| ---| ---| --- |
+| options | --dt-oneagent-options=\<option string\> | Specifies OneAgent options |
+| npmModuleVersion | --dt-oneagent-module-version=\<version\> | specifies the version of OneAgent for PaaS module. Specify next for @next version.|
+| verbose | --verbose | enables extended output of plugin processing. --verbose enables verbose mode for all plugins, while verbose option in `serverless.yml` enables verbose output for this plugin only.
+
+```yaml
+custom:
+  serverless-oneagent:
+    # enable serverless-oneagent plugin verbose mode
+    verbose: true
+    # specify @next Dynatrace OneAgent npm module
+    npmModuleVersion: next
+```
+
+```shell
+serverless deploy --dt-oneagent-module-version=next --dt-oneagent-options='{"dynatraceTagPropertyPath":"headers.x-dynatrace","server":"...","tenant":"...","tenanttoken":"..."}' --verbose
+```
+
 ## Samples
+
+The samples folder contains ready to go serverless projects.
 
 + AWS Lambda with Node.js runtime [serverless](samples/aws-lambda-node.js/README.md)
 + AWS Lambda with Node.js runtime and serverless-webpack [serverless](samples/aws-lambda-node.js-webpack/README.md)
 
-## Limitations
+## Supported provider and runtime environments
 
-+ Dynatrace AWS Lambda support is in Early Access phase. Please contact a Dynatrace representative to apply for early access.
-+ This plugin supports AWS Lambda with Node.js runtime deployments only.
++ The current plugin version supports following deployments
+  + AWS Lambda with Node.js runtime version 4.x, 6.x, and 8.x
++ Dynatrace AWS Lambda support is in Early Access phase. Please contact a Dynatrace representative to register for program participation.
+
+## Support
+
+In case of problems, feature requests, or questions submit a [ticket](https://github.com/Dynatrace/serverless-oneagent/issues).
