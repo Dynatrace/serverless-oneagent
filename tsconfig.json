@@ -19,5 +19,8 @@
 		"src/**/*.ts"
 	],
 	"exclude": [
+		".git/*",
+		".serverless/*",
+		".webpack/*"
 	]
 }

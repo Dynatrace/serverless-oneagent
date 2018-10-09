@@ -1,6 +1,4 @@
-# Dynatrace OneAgent Serverless plugin
-
-![Dynatrace Logo](res/Dynatrace_Logo.png)
+# ![Dynatrace](res/Dynatrace_Logo.png) <br/> OneAgent Serverless plugin
 
 dynatrace-oneagent is a plugin for [serverless framework](https://github.com/serverless/serverless) which will add Dynatrace monitoring automatically to serverless deployments.
 
