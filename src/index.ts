@@ -286,6 +286,10 @@ class DynatraceOneAgentPlugin {
 		return `@dynatrace/oneagent${!this.npmModuleVersion ? "" : "@" + this.npmModuleVersion}`;
 	}
 
+	/**
+	 * Initialize plugin configuration from yaml or command line options
+	 * @param options command line options as received from serverless framework
+	 */
 	private initConfig(options: Serverless.CommandLineOptions) {
 		const ymlConfig = (_.get(this.serverless, "service.custom.serverless-oneagent") || {}) as PluginYamlConfig;
 

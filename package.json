@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "Dynatrace OneAgent serverless framework plugin",
   "main": "dist",
-  "scripts": {},
+  "scripts": {
+    "prepare": "rm -r dist/* && tsc"
+  },
   "author": "Dynatrace",
   "license": "MIT",
   "devDependencies": {

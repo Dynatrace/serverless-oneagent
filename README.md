@@ -1,12 +1,18 @@
+<!-- markdownlint-disable MD033 -->
+
 # ![Dynatrace](res/Dynatrace_Logo.png) <br/> OneAgent Serverless plugin
 
 dynatrace-oneagent is a plugin for [serverless framework](https://github.com/serverless/serverless) which will add Dynatrace monitoring automatically to serverless deployments.
 
-> Enable Dynatrace monitoring of your serverless functions in a jiffy.
+> Please note: Dynatrace AWS Lambda support is in Early Access phase. Please contact a Dynatrace representative to register for program participation.
 
 ## Configuration
 
 The Dynatrace OneAgent serverless plugin will configure serverless and serverless-webpack to bundle [Dynatrace npm module for PaaS](https://github.com/Dynatrace/agent-nodejs).
+
+In regular serverless projects, the plugin will npm install and tailor [Dynatrace npm module for PaaS](https://github.com/Dynatrace/agent-nodejs) during serverless packaging process. It will also reconfigure the function handler definition to load Dynatrace OneAgent at function instance startup.
+
+In serverless-webpack case, the plugin will configure webpack to include [Dynatrace npm module for PaaS](https://github.com/Dynatrace/agent-nodejs) into the bundle. The resulting deployment zip file will contain the Javascript file for the handler function and a node_modules folder with Dynatrace OneAgent.
 
 Enabling your serverless project for Dynatrace OneAgent is a two steps process:
 
@@ -88,7 +94,6 @@ The samples folder contains ready to go serverless projects.
 
 + The current plugin version supports following deployments
   + AWS Lambda with Node.js runtime version 4.x, 6.x, and 8.x
-+ Dynatrace AWS Lambda support is in Early Access phase. Please contact a Dynatrace representative to register for program participation.
 
 ## Support
 

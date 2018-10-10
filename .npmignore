@@ -1,0 +1,12 @@
+.vscode
+logs
+src
+res
+*.log
+dynatrace-serverless-oneagent-*.tgz
+npm-debug.log*
+.serverless
+.webpack
+node_modules
+tsconfig.json
+tslint.json
