@@ -67,7 +67,7 @@ serverless deploy --dt-oneagent-options='{"dynatraceTagPropertyPath":"headers.x-
 | `serverless.yml`| command line | description |
 | ---| ---| --- |
 | options | --dt-oneagent-options=\<option string\> | Specifies OneAgent options |
-| npmModuleVersion | --dt-oneagent-module-version=\<version\> | specifies the version of OneAgent for PaaS module. Specify next for @next version.|
+| npmModuleVersion | --dt-oneagent-module-version=\<version\> | Specifies the version of OneAgent for PaaS module. Default is `latest`, specify `next` for @next version.|
 | verbose | --verbose | enables extended output of plugin processing. --verbose enables verbose mode for all plugins, while verbose option in `serverless.yml` enables verbose output for this plugin only.
 
 ```yaml
