@@ -296,9 +296,6 @@ class DynatraceOneAgentPlugin {
 		this.config.verbose = ymlConfig.verbose || options.verbose || options.v || false;
 		this.config.debug = ymlConfig.debug || options["dt-debug"] || false;
 		this.config.agentOptions = options["dt-oneagent-options"] || ymlConfig.options || "";
-		if (this.config.agentOptions.length === 0) {
-			throw new Error("OneAgent options neither specified in serverless.yml nor at command line (--dt-oneagent-options)");
-		}
 		this.config.npmModuleVersion = options["dt-oneagent-module-version"] || ymlConfig.npmModuleVersion;
 	}
 
