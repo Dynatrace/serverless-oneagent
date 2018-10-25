@@ -7,7 +7,7 @@ dynatrace-oneagent is a plugin for [serverless framework](https://github.com/ser
 > Please note: Dynatrace AWS Lambda support is in Early Access phase. Please contact a Dynatrace representative to register for program participation.
 
 ## Disclaimer
-This plugin is community contributed and not officially supported by Dynatrace.
+This plugin is community contributed and **not officially supported by Dynatrace**.
 In case of problems, feature requests, or questions [submit a ticket on GitHub](https://github.com/Dynatrace/serverless-oneagent/issues)
 
 ## Configuration
