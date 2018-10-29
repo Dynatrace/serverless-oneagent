@@ -4,6 +4,11 @@
 
 dynatrace-oneagent is a plugin for [serverless framework](https://github.com/serverless/serverless) which will add Dynatrace monitoring automatically to serverless deployments.
 
+## Disclaimer
+
+This plugin is community contributed and **not officially supported by Dynatrace**.
+In case of problems, feature requests, or questions [submit a ticket on GitHub](https://github.com/Dynatrace/serverless-oneagent/issues)
+
 ## Configuration
 
 The Dynatrace OneAgent serverless plugin will configure serverless and serverless-webpack to bundle [Dynatrace npm module for PaaS](https://github.com/Dynatrace/agent-nodejs).
