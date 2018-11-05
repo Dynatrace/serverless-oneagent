@@ -2,6 +2,11 @@
   "name": "@dynatrace/serverless-oneagent",
   "version": "1.0.0",
   "description": "Dynatrace OneAgent serverless framework plugin",
+  "repository": "https://github.com/Dynatrace/serverless-oneagent",
+  "homepage": "https://github.com/Dynatrace/serverless-oneagent",
+  "bugs": {
+    "url": "https://github.com/Dynatrace/serverless-oneagent/issues"
+  },
   "main": "dist",
   "scripts": {
     "prepare": "rm -r dist/* && tsc"
@@ -21,11 +26,11 @@
     "webpack": "^4.20.2"
   },
   "dependencies": {
-    "npm": "^6.4.1",
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.11",
+    "npm": "^6.4.1"
   },
   "engines": {
-    "node": ">=6",
+    "node": ">=8",
     "npm": ">=2"
   },
   "keywords": [
