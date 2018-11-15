@@ -28,6 +28,7 @@ import * as Stream from "stream";
 import * as Path from "path";
 import * as Util from "util";
 import * as FileSystem from "fs";
+import * as OS from "os";
 import * as _ from "lodash";
 
 // ============================================================================
@@ -502,7 +503,12 @@ class DynatraceOneAgentPlugin {
 
 			try {
 				// start tailoring script
-				const cmd = Path.join(nodeModulesPath, "node_modules/.bin/dt-oneagent-tailor");
+				const cmd = Path.join(
+					nodeModulesPath,
+					"node_modules",
+					".bin",
+					OS.platform() === "win32" ? "dt-oneagent-tailor.cmd" : "dt-oneagent-tailor"
+				);
 
 				FileSystem.accessSync(cmd);
 				this.logVerbose(`executing ${cmd} ${tailorArgs.join(" ")}`);
