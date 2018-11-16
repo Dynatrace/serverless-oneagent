@@ -535,7 +535,7 @@ class DynatraceOneAgentPlugin {
 
 		return new Promise((resolve, reject) => {
 			this.log(`Installing Dynatrace oneagent npm module`);
-			const args = [ this.qualifiedNpmModuleName ];
+			const args = [ this.qualifiedNpmModuleName, "--no-save" ];
 
 			Npm.commands.install(args, (err) => {
 				if (!err) {
