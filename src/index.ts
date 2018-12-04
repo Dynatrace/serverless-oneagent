@@ -541,7 +541,7 @@ class DynatraceOneAgentPlugin {
 
 		return new Promise((resolve, reject) => {
 			this.log(`Installing Dynatrace oneagent npm module`);
-			const args = [ this.qualifiedNpmModuleName, "--no-save" ];
+			const args = [ this.qualifiedNpmModuleName ];
 
 			Npm.commands.install(args, (err) => {
 				if (!err) {
@@ -582,7 +582,8 @@ class DynatraceOneAgentPlugin {
 		return new Promise((resolve, reject) => {
 			// silence npm if not in verbose mode
 			const options = {
-				logstream: this.isVerbose ? process.stderr : new LogStream()
+				logstream: this.isVerbose ? process.stderr : new LogStream(),
+				save: false
 			};
 
 			Npm.load(options, (err) => {
