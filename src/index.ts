@@ -255,15 +255,19 @@ class DynatraceOneAgentPlugin {
 
 		this.determineDeploymentMode();
 
-		if (this.deploymentMode === DeploymentMode.Webpack) {
-			this.preProcessServerlessWebPackDeployment();
-		}
-
 		this.defineEventHook("before:package:createDeploymentArtifacts", this.preProcessPlainServerlessDeployment, DeploymentMode.PlainServerless);
 		this.defineEventHook("after:package:createDeploymentArtifacts", this.postProcessPlainServerlessDeployment, DeploymentMode.PlainServerless);
 
-		this.defineEventHook("before:aws:common:validate", this.preProcessServerlessWebPackDeployment, DeploymentMode.Webpack);
+		this.defineEventHook("before:package:initialize", this.preProcessServerlessWebPackDeployment, DeploymentMode.Webpack);
 		this.defineEventHook("after:webpack:package:packExternalModules", this.postProcessServerlessWebPackDeployment, DeploymentMode.Webpack);
+
+		const hooks = (serverless.pluginManager as any).hooks;
+		Object.keys(hooks).forEach((key) => {
+			if (!this.hooks[key]) {
+				this.hooks[key] = () => this.logVerbose(`noop in event '${key}'`);
+			}
+		});
+
 	}
 
 	/**
@@ -368,8 +372,15 @@ class DynatraceOneAgentPlugin {
 	 */
 	private async preProcessServerlessWebPackDeployment() {
 		if (_.has(this.serverless, "service.custom.webpack.includeModules.forceInclude")) {
-			this.serverless.service.custom!.webpack!.includeModules!.forceInclude!.push(this.qualifiedNpmModuleName);
+			const forcedIncludes = this.serverless.service.custom!.webpack!.includeModules!.forceInclude!;
+			if (!forcedIncludes.some((mn) => mn !== this.qualifiedNpmModuleName)) {
+				this.logVerbose(`adding ${this.qualifiedNpmModuleName} to ${forcedIncludes}`);
+				forcedIncludes.push(this.qualifiedNpmModuleName);
+			} else {
+				this.logVerbose(`adding ${this.qualifiedNpmModuleName} already in ${forcedIncludes}`);
+			}
 		} else {
+			this.logVerbose(`adding ${this.qualifiedNpmModuleName} to virgin forceInclude`);
 			_.set(this.serverless, "service.custom.webpack.includeModules.forceInclude", [this.qualifiedNpmModuleName]);
 		}
 
