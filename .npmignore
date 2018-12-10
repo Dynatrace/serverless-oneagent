@@ -10,3 +10,4 @@ npm-debug.log*
 node_modules
 tsconfig.json
 tslint.json
+package
