@@ -245,13 +245,13 @@ class DynatraceOneAgentPlugin {
 	 * @param serverless
 	 * @param options
 	 */
-	public constructor(private readonly serverless: Serverless.Instance, options: Serverless.CommandLineOptions) {
+	public constructor(private readonly serverless: Serverless.Instance, private readonly options: Serverless.CommandLineOptions) {
 		/*
 		 * restrict this plugin to supported providers
 		 */
 		this.provider = this.serverless.getProvider("aws");
 
-		this.initConfig(options);
+		this.updateConfig();
 
 		this.determineDeploymentMode();
 
@@ -295,13 +295,13 @@ class DynatraceOneAgentPlugin {
 	 * Initialize plugin configuration from yaml or command line options
 	 * @param options command line options as received from serverless framework
 	 */
-	private initConfig(options: Serverless.CommandLineOptions) {
+	private updateConfig() {
 		const ymlConfig = (_.get(this.serverless, "service.custom.serverless-oneagent") || {}) as PluginYamlConfig;
 
-		this.config.verbose = ymlConfig.verbose || options.verbose || options.v || false;
-		this.config.debug = ymlConfig.debug || options["dt-debug"] || false;
-		this.config.agentOptions = options["dt-oneagent-options"] || ymlConfig.options || "";
-		this.config.npmModuleVersion = options["dt-oneagent-module-version"] || ymlConfig.npmModuleVersion;
+		this.config.verbose = ymlConfig.verbose || this.options.verbose || this.options.v || false;
+		this.config.debug = ymlConfig.debug || this.options["dt-debug"] || false;
+		this.config.agentOptions = this.options["dt-oneagent-options"] || ymlConfig.options || "";
+		this.config.npmModuleVersion = this.options["dt-oneagent-module-version"] || ymlConfig.npmModuleVersion;
 	}
 
 	/**
@@ -371,6 +371,8 @@ class DynatraceOneAgentPlugin {
 	 *        - "@dynatrace/oneagent"
 	 */
 	private async preProcessServerlessWebPackDeployment() {
+		this.updateConfig();
+
 		if (_.has(this.serverless, "service.custom.webpack.includeModules.forceInclude")) {
 			const forcedIncludes = this.serverless.service.custom!.webpack!.includeModules!.forceInclude!;
 			if (!forcedIncludes.some((mn) => mn !== this.qualifiedNpmModuleName)) {
@@ -395,6 +397,7 @@ class DynatraceOneAgentPlugin {
 	 * - rewrite Lambda function handler definition
 	 */
 	private async postProcessServerlessWebPackDeployment() {
+		this.updateConfig();
 		let tailoringSucceeded = Array.isArray(this.serverless.pluginManager.plugins);
 		if (tailoringSucceeded) {
 			try {
@@ -449,6 +452,7 @@ class DynatraceOneAgentPlugin {
 	 * - set options
 	 */
 	private async preProcessPlainServerlessDeployment() {
+		this.updateConfig();
 		await this.npmInstallOneAgentModule();
 		await this.tailorOneAgentModule();
 		await this.setDtLambdaOptions();
@@ -460,6 +464,7 @@ class DynatraceOneAgentPlugin {
 	 * - uninstall npm module installed in preprocessing
 	 */
 	private async postProcessPlainServerlessDeployment() {
+		this.updateConfig();
 		await this.rewriteHandlerDefinitions();
 		await this.npmUninstallOneAgentModule();
 	}
