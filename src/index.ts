@@ -301,6 +301,20 @@ class DynatraceOneAgentPlugin {
 		this.config.verbose = ymlConfig.verbose || this.options.verbose || this.options.v || false;
 		this.config.debug = ymlConfig.debug || this.options["dt-debug"] || false;
 		this.config.agentOptions = this.options["dt-oneagent-options"] || ymlConfig.options || "";
+
+		if (this.config.agentOptions.length > 0) {
+			try {
+				const optionsObject = JSON.parse(this.config.agentOptions);
+				["server", "tenant", "tenanttoken"].forEach((n) => {
+					if (optionsObject[n] === undefined) {
+						throw new Error(`property "${n}" is missing in OneAgent option string`);
+					}
+				});
+			} catch (e) {
+				throw new Error(`invalid or incomplete OneAgent options: ${e}`);
+			}
+
+		}
 		this.config.npmModuleVersion = this.options["dt-oneagent-module-version"] || ymlConfig.npmModuleVersion;
 	}
 
