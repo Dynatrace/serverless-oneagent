@@ -302,7 +302,8 @@ class DynatraceOneAgentPlugin {
 		this.config.debug = ymlConfig.debug || this.options["dt-debug"] || false;
 		this.config.agentOptions = this.options["dt-oneagent-options"] || ymlConfig.options || "";
 
-		if (this.config.agentOptions.length > 0) {
+		// sanity check agent options (if already available - could be still a to be expanded variable)
+		if (this.config.agentOptions.length > 0 && !this.config.agentOptions.startsWith("$")) {
 			try {
 				const optionsObject = JSON.parse(this.config.agentOptions);
 				["server", "tenant", "tenanttoken"].forEach((n) => {
