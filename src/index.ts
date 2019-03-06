@@ -84,6 +84,7 @@ namespace Serverless {
 
 	interface Function {
 		handler: string;
+		runtime: string;
 	}
 
 	interface PluginManager {
@@ -499,10 +500,13 @@ class DynatraceOneAgentPlugin {
 		 */
 		Object.keys(this.serverless.service.functions).forEach((k) => {
 			const fn = this.serverless.service.functions[k];
-			const origHandler = fn.handler;
-			const splitted = origHandler.split(".");
-			fn.handler = `node_modules/@dynatrace/oneagent/index.${splitted[0]}$${splitted[1]}`;
-			this.log(`modifying Lambda handler ${k}: ${origHandler} -> ${fn.handler}`);
+			const result = /nodejs([0-9]+).[0-9.]+/.exec(fn.runtime);
+			if (!fn.runtime || result !== null) {
+				const origHandler = fn.handler;
+				const splitted = origHandler.split(".");
+				fn.handler = `node_modules/@dynatrace/oneagent/index.${splitted[0]}$${splitted[1]}`;
+				this.log(`modifying Lambda handler ${k}: ${origHandler} -> ${fn.handler}`);
+			}
 		});
 	}
 
