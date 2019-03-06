@@ -26,7 +26,6 @@ import * as Npm from "npm";
 import * as ChildProcess from "child_process";
 import * as Stream from "stream";
 import * as Path from "path";
-import * as Util from "util";
 import * as FileSystem from "fs";
 import * as OS from "os";
 import * as _ from "lodash";
@@ -434,7 +433,7 @@ class DynatraceOneAgentPlugin {
 					/*
 					 * iterate all compilation results and invoke tailoring in the output folders
 					 */
-					tailoringSucceeded = _.has(slsw, "compileStats.stats") && Util.isArray(slsw.compileStats.stats);
+					tailoringSucceeded = _.has(slsw, "compileStats.stats") && Array.isArray(slsw.compileStats.stats);
 					if (tailoringSucceeded) {
 						const promises = slsw.compileStats.stats.map(async (cs) => {
 							if (_.has(cs, "compilation.compiler.outputPath")) {
@@ -500,8 +499,13 @@ class DynatraceOneAgentPlugin {
 		 */
 		Object.keys(this.serverless.service.functions).forEach((k) => {
 			const fn = this.serverless.service.functions[k];
-			const result = /nodejs([0-9]+).[0-9.]+/.exec(fn.runtime);
-			if (!fn.runtime || result !== null) {
+
+			const runtime = (fn.runtime || _.get(this.serverless.service, "provider.runtime"));
+			this.log(`function ${k} runtime is ${runtime}`);
+
+			// only rewrite for functions with Node.js runtime
+			const isNodeJsRuntime = `${runtime}`.indexOf("nodejs") >= 0;
+			if (isNodeJsRuntime) {
 				const origHandler = fn.handler;
 				const splitted = origHandler.split(".");
 				fn.handler = `node_modules/@dynatrace/oneagent/index.${splitted[0]}$${splitted[1]}`;
