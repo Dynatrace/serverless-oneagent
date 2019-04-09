@@ -390,7 +390,7 @@ class DynatraceOneAgentPlugin {
 
 		if (_.has(this.serverless, "service.custom.webpack.includeModules.forceInclude")) {
 			const forcedIncludes = this.serverless.service.custom!.webpack!.includeModules!.forceInclude!;
-			if (!forcedIncludes.some((mn) => mn !== this.qualifiedNpmModuleName)) {
+			if (!forcedIncludes.includes(this.qualifiedNpmModuleName)) {
 				this.logVerbose(`adding ${this.qualifiedNpmModuleName} to ${forcedIncludes}`);
 				forcedIncludes.push(this.qualifiedNpmModuleName);
 			} else {
