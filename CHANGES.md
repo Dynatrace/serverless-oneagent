@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 1.0.9
+
+- [do not rewrite function handlers of non Node.js runtime Lambda functions](https://github.com/Dynatrace/serverless-oneagent/issues/8)
+
 ## Version 1.0.8
 
 - do not rewrite function handlers of non Node.js runtime Lambda functions
