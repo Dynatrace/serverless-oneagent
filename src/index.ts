@@ -532,7 +532,7 @@ class DynatraceOneAgentPlugin {
 
 			const runtime = this.serverless.service.provider.runtime;
 			const tailorArgs: string[] = [];
-			const result = /nodejs([0-9]+).[0-9.]+/.exec(runtime);
+			const result = /nodejs([0-9]+)\./.exec(runtime);
 			if (result !== null) {
 				tailorArgs.push(`--AwsLambdaV${result[1]}`);
 			} else {
