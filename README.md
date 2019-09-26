@@ -96,7 +96,7 @@ The samples folder contains ready to go serverless projects.
 ## Supported provider and runtime environments
 
 + The current plugin version supports following deployments
-  + AWS Lambda with Node.js runtime version 4.x, 6.x, and 8.x
+  + AWS Lambda with Node.js runtime version 4.x, 6.x, 8.x and 10.x
 
 ## Support
 
