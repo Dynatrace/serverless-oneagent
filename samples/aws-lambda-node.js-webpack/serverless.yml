@@ -3,8 +3,7 @@ service: dynatrace-oneagent-sample
 # Add the serverless-webpack plugin
 plugins:
   - serverless-webpack
-  - serverless-offline
-  # DYNATRACE: 
+  # DYNATRACE:
   # pull in Dynatrace OneAgent plugin (install first with "npm install --save-dev @dynatrace/serverless-oneagent")
   - "@dynatrace/serverless-oneagent"
 
@@ -31,6 +30,6 @@ functions:
           method: GET
           path: second
 
-custom: 
+custom:
   # import options from a Javascript file
   ${file(./oneagent-serverless-options.js)}

@@ -79,6 +79,7 @@ namespace Serverless {
 		"dt-oneagent-options"?: string;
 		"dt-debug"?: boolean;
 		"dt-oneagent-module-version"?: string;
+		"dt-set-dt-lambda-handler"?: boolean;
 	}
 
 	interface Function {
@@ -148,6 +149,12 @@ interface PluginYamlConfig {
 	 * enables --verbose mode only for this serverless plugin
 	 */
 	verbose?: boolean;
+
+	/**
+	 * new style handler definition rewrite.
+	 * will set DT_LAMBDA_HANDLER instead of encoding user handler in handler definition
+	 */
+	setDtLambdaHandler?: boolean;
 }
 
 // ============================================================================
@@ -226,6 +233,17 @@ interface Config {
 	 * OneAgent option string
 	 */
 	agentOptions: string;
+
+	/**
+	 * new style handler definition rewrite.
+	 * will set DT_LAMBDA_HANDLER instead of encoding user handler in handler definition
+	 */
+	setDtLambdaHandler: boolean;
+
+	/**
+	 * true, if @dynatrace/oneagent/lib/LambdaUtil.js file exists
+	 */
+	oneagentNpmModuleSupportsDtLambdaHandler: boolean;
 }
 
 // ============================================================================
@@ -301,6 +319,17 @@ class DynatraceOneAgentPlugin {
 		this.config.verbose = ymlConfig.verbose || this.options.verbose || this.options.v || false;
 		this.config.debug = ymlConfig.debug || this.options["dt-debug"] || false;
 		this.config.agentOptions = this.options["dt-oneagent-options"] || ymlConfig.options || "";
+		const setDtLambdaHandler = this.options["dt-set-dt-lambda-handler"] || ymlConfig.setDtLambdaHandler;
+		if (setDtLambdaHandler != null) {
+			// user configuration - check if DT_LAMBDA_HANDLER is supported
+			if (setDtLambdaHandler && !this.config.oneagentNpmModuleSupportsDtLambdaHandler) {
+				throw new Error(`This version of @dynatrace/oneagent npm package does not support DT_LAMBDA_HANDLER`);
+			}
+			this.config.setDtLambdaHandler = setDtLambdaHandler;
+		} else {
+			// if DT_LAMBDA_HANDLER is supported, prefer over encoding user handler in handler redirect
+			this.config.setDtLambdaHandler = this.config.oneagentNpmModuleSupportsDtLambdaHandler;
+		}
 
 		// sanity check agent options (if already available - could be still a to be expanded variable)
 		if (this.config.agentOptions.length > 0 && !this.config.agentOptions.startsWith("$")) {
@@ -505,10 +534,18 @@ class DynatraceOneAgentPlugin {
 
 			// only rewrite for functions with Node.js runtime
 			const isNodeJsRuntime = `${runtime}`.indexOf("nodejs") >= 0;
+			let exportSpec: string;
 			if (isNodeJsRuntime) {
 				const origHandler = fn.handler;
-				const splitted = origHandler.split(".");
-				fn.handler = `node_modules/@dynatrace/oneagent/index.${splitted[0]}$${splitted[1]}`;
+				if (this.config.setDtLambdaHandler) {
+					exportSpec = "handler";
+					this.log(`adding DT_LAMBDA_HANDLER=${origHandler}`);
+					_.set(fn, "env.DT_LAMBDA_HANDLER", origHandler);
+				} else {
+					const splitted = origHandler.split(".");
+					exportSpec = `${splitted[0]}$${splitted[1]}`;
+				}
+				fn.handler = `node_modules/@dynatrace/oneagent/index.${exportSpec}`;
 				this.log(`modifying Lambda handler ${k}: ${origHandler} -> ${fn.handler}`);
 			}
 		});
@@ -585,6 +622,15 @@ class DynatraceOneAgentPlugin {
 			Npm.commands.install(args, (err) => {
 				if (!err) {
 					this.logVerbose(`npm install succeeded`);
+					this.logVerbose("determining, if @dynatrace/oneagent supports DT_LAMBDA_HANDLER");
+					try {
+						// check if Dynatrace.Features.DtLambdaHandler is set in package.json
+						const pkg = require("@dynatrace/oneagent/package.json");
+						this.config.oneagentNpmModuleSupportsDtLambdaHandler = _.get(pkg, "Dynatrace.Features.DtLambdaHandler", false);
+					} catch (e) {
+						this.config.oneagentNpmModuleSupportsDtLambdaHandler = false;
+					}
+					this.logVerbose(`@dynatrace/oneagent does${this.config.oneagentNpmModuleSupportsDtLambdaHandler ? "" : " not"} support DT_LAMBDA_HANDLER`);
 					resolve();
 				} else {
 					this.log(`npm install failed: ${err}`);
@@ -660,7 +706,9 @@ class DynatraceOneAgentPlugin {
 	private readonly config: Config = {
 		verbose: false,
 		debug: false,
-		agentOptions: ""
+		agentOptions: "",
+		oneagentNpmModuleSupportsDtLambdaHandler: false,
+		setDtLambdaHandler: false
 	};
 	private deploymentMode = DeploymentMode.Undetermined;
 	private readonly cannotTailorErrMsg = "could not determine serverless-webpack intermediate files to tailor OneAgent" +

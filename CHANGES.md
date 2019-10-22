@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 1.0.11
+
+- support for DT_LAMBDA_HANDLER environment variable (resolves issues with handlers in subfolders)
+
 ## Version 1.0.10
 
 - Node.js 10.x runtime support
