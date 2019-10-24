@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 1.0.12
+
+- fix issue setting DT_LAMBDA_HANDLER in function definition
+
 ## Version 1.0.11
 
 - support for DT_LAMBDA_HANDLER environment variable (resolves issues with handlers in subfolders)

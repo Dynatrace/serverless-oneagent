@@ -540,7 +540,7 @@ class DynatraceOneAgentPlugin {
 				if (this.config.setDtLambdaHandler) {
 					exportSpec = "handler";
 					this.log(`adding DT_LAMBDA_HANDLER=${origHandler}`);
-					_.set(fn, "env.DT_LAMBDA_HANDLER", origHandler);
+					_.set(fn, "environment.DT_LAMBDA_HANDLER", origHandler);
 				} else {
 					const splitted = origHandler.split(".");
 					exportSpec = `${splitted[0]}$${splitted[1]}`;
