@@ -1,6 +1,6 @@
 {
   "name": "@dynatrace/serverless-oneagent",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "Dynatrace OneAgent serverless framework plugin",
   "repository": "https://github.com/Dynatrace/serverless-oneagent",
   "homepage": "https://github.com/Dynatrace/serverless-oneagent",

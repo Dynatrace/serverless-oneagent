@@ -21,14 +21,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 // ----------------------------------------------------------------------------
-
-import * as Npm from "npm";
 import * as ChildProcess from "child_process";
-import * as Stream from "stream";
-import * as Path from "path";
 import * as FileSystem from "fs";
-import * as OS from "os";
 import * as _ from "lodash";
+import * as Npm from "npm";
+import * as OS from "os";
+import * as Path from "path";
+import * as Stream from "stream";
+
 
 // ============================================================================
 
@@ -551,12 +551,28 @@ class DynatraceOneAgentPlugin {
 		});
 	}
 
+	private determineDtLambdaHandlerSupport(nodeModulePath: string) {
+		this.logVerbose("determining, if @dynatrace/oneagent supports DT_LAMBDA_HANDLER");
+		try {
+			// check if Dynatrace.Features.DtLambdaHandler is set in package.json
+			const resolvedPath = require.resolve("@dynatrace/oneagent/package.json", { paths: [nodeModulePath] });
+			const pkg = require(resolvedPath);
+			this.config.oneagentNpmModuleSupportsDtLambdaHandler = _.get(pkg, "Dynatrace.Features.DtLambdaHandler", false);
+		} catch (e) {
+			this.config.oneagentNpmModuleSupportsDtLambdaHandler = false;
+		}
+		this.updateConfig();
+		this.logVerbose(`@dynatrace/oneagent does${this.config.oneagentNpmModuleSupportsDtLambdaHandler ? "" : " not"} support DT_LAMBDA_HANDLER`);
+	}
+
 	/**
 	 * The OneAgent npm module includes native extensions for all supported Node.js versions
 	 * Lambda function is specified for a specific Node.js version, thus clear the unneeded
 	 * binaries from the module to reduce zip package size
 	 */
 	private tailorOneAgentModule(nodeModulesPath = "./") {
+		this.determineDtLambdaHandlerSupport(nodeModulesPath);
+
 		this.log(`tailoring OneAgent module in ${nodeModulesPath}`);
 		return new Promise((resolve, reject) => {
 
@@ -622,15 +638,6 @@ class DynatraceOneAgentPlugin {
 			Npm.commands.install(args, (err) => {
 				if (!err) {
 					this.logVerbose(`npm install succeeded`);
-					this.logVerbose("determining, if @dynatrace/oneagent supports DT_LAMBDA_HANDLER");
-					try {
-						// check if Dynatrace.Features.DtLambdaHandler is set in package.json
-						const pkg = require("@dynatrace/oneagent/package.json");
-						this.config.oneagentNpmModuleSupportsDtLambdaHandler = _.get(pkg, "Dynatrace.Features.DtLambdaHandler", false);
-					} catch (e) {
-						this.config.oneagentNpmModuleSupportsDtLambdaHandler = false;
-					}
-					this.logVerbose(`@dynatrace/oneagent does${this.config.oneagentNpmModuleSupportsDtLambdaHandler ? "" : " not"} support DT_LAMBDA_HANDLER`);
 					resolve();
 				} else {
 					this.log(`npm install failed: ${err}`);

@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 1.0.13
+
+- DT_LAMBDA_HANDLER support for WebPack projects
+
 ## Version 1.0.12
 
 - fix issue setting DT_LAMBDA_HANDLER in function definition
