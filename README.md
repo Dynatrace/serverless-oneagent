@@ -75,7 +75,7 @@ e.g.
 "dependencies": {
         "@dynatrace/oneagent": "latest"
     },
-    "devDependencies": {
+"devDependencies": {
         "@dynatrace/serverless-oneagent": "xxx"
     } 
  ```
