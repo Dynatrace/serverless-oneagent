@@ -65,6 +65,18 @@ If you do not want to add OneAgent options to the `serverless.yml` , the options
 serverless deploy --dt-oneagent-options='{"dynatraceTagPropertyPath":"headers.x-dynatrace","server":"...","tenant":"...","tenanttoken":"..."}'
 ```
 
+### Yarn configuration 
+NPM automatically install `@dynatrace/oneagent` dependency in build time but Yarn will throw build error. if Your using Yarn you need manually added `@dynatrace/oneagent` in the `package.json` file
+
+```
+"dependencies": {
+        "@dynatrace/oneagent": "xxx"
+    },
+    "devDependencies": {
+        "@dynatrace/serverless-oneagent": "xxx"
+    } 
+ ```
+    
 ### Options summary
 
 | `serverless.yml`| command line | description |
