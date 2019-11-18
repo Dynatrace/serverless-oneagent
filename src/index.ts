@@ -80,6 +80,7 @@ namespace Serverless {
 		"dt-debug"?: boolean;
 		"dt-oneagent-module-version"?: string;
 		"dt-set-dt-lambda-handler"?: boolean;
+		"dt-exclude"?: string;
 	}
 
 	interface Function {
@@ -155,6 +156,11 @@ interface PluginYamlConfig {
 	 * will set DT_LAMBDA_HANDLER instead of encoding user handler in handler definition
 	 */
 	setDtLambdaHandler?: boolean;
+
+	/**
+	 * exclude the specified functions from monitoring
+	 */
+	exclude?: string[];
 }
 
 // ============================================================================
@@ -244,6 +250,11 @@ interface Config {
 	 * true, if @dynatrace/oneagent/lib/LambdaUtil.js file exists
 	 */
 	oneagentNpmModuleSupportsDtLambdaHandler: boolean;
+
+	/**
+	 * list of functions to exclude from monitoring
+	 */
+	exclude: string[];
 }
 
 // ============================================================================
@@ -318,6 +329,11 @@ class DynatraceOneAgentPlugin {
 
 		this.config.verbose = ymlConfig.verbose || this.options.verbose || this.options.v || false;
 		this.config.debug = ymlConfig.debug || this.options["dt-debug"] || false;
+
+		this.config.exclude = ymlConfig.exclude ||
+			((this.options["dt-exclude"] != null) ? `${this.options["dt-exclude"]}`.split(",") : undefined) ||
+			[];
+
 		this.config.agentOptions = this.options["dt-oneagent-options"] || ymlConfig.options || "";
 		const setDtLambdaHandler = this.options["dt-set-dt-lambda-handler"] || ymlConfig.setDtLambdaHandler;
 		if (setDtLambdaHandler != null) {
@@ -532,10 +548,12 @@ class DynatraceOneAgentPlugin {
 			const runtime = (fn.runtime || _.get(this.serverless.service, "provider.runtime"));
 			this.log(`function ${k} runtime is ${runtime}`);
 
-			// only rewrite for functions with Node.js runtime
-			const isNodeJsRuntime = `${runtime}`.indexOf("nodejs") >= 0;
+			// only rewrite for functions with Node.js runtime and which are not excluded from
+			const isExcluded = this.config.exclude.includes(k);
+			const isNodejsRuntime = `${runtime}`.indexOf("nodejs") >= 0;
+			const doInstrument = isNodejsRuntime && !isExcluded;
 			let exportSpec: string;
-			if (isNodeJsRuntime) {
+			if (doInstrument) {
 				const origHandler = fn.handler;
 				if (this.config.setDtLambdaHandler) {
 					exportSpec = "handler";
@@ -547,6 +565,10 @@ class DynatraceOneAgentPlugin {
 				}
 				fn.handler = `node_modules/@dynatrace/oneagent/index.${exportSpec}`;
 				this.log(`modifying Lambda handler ${k}: ${origHandler} -> ${fn.handler}`);
+			} else if (isExcluded) {
+				this.log(`function ${k} has been excluded from monitoring`);
+			} else if (!isNodejsRuntime) {
+				this.log(`not instrumenting function ${k} with runtime ${runtime}`);
 			}
 		});
 	}
@@ -715,7 +737,8 @@ class DynatraceOneAgentPlugin {
 		debug: false,
 		agentOptions: "",
 		oneagentNpmModuleSupportsDtLambdaHandler: false,
-		setDtLambdaHandler: false
+		setDtLambdaHandler: false,
+		exclude: []
 	};
 	private deploymentMode = DeploymentMode.Undetermined;
 	private readonly cannotTailorErrMsg = "could not determine serverless-webpack intermediate files to tailor OneAgent" +

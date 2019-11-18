@@ -15,7 +15,12 @@ module.exports = () => {
 
 			// enables extended logging of plugin operations
 			// alternatively, --verbose command line option can be set
-			verbose: true
+			verbose: true,
+
+			// exclude the given list of functions from instrumentation.
+			exclude: [
+				"third"
+			]
 		}
 	};
 }

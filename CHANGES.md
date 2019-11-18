@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 1.0.14
+
+- added capability to exclude functions from instrumentation
+
 ## Version 1.0.13
 
 - DT_LAMBDA_HANDLER support for WebPack projects

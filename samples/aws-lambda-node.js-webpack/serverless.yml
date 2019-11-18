@@ -7,9 +7,6 @@ plugins:
   # pull in Dynatrace OneAgent plugin (install first with "npm install --save-dev @dynatrace/serverless-oneagent")
   - "@dynatrace/serverless-oneagent"
 
-package:
-  individually: true
-
 provider:
   name: aws
   runtime: nodejs10.x
@@ -29,6 +26,13 @@ functions:
       - http:
           method: GET
           path: second
+
+  third:
+    handler: third.handler
+    events:
+      - http:
+          method: GET
+          path: third
 
 custom:
   # import options from a Javascript file

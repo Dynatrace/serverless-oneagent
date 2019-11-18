@@ -72,18 +72,29 @@ serverless deploy --dt-oneagent-options='{"dynatraceTagPropertyPath":"headers.x-
 | options | --dt-oneagent-options=\<option string\> | Specifies OneAgent options |
 | npmModuleVersion | --dt-oneagent-module-version=\<version\> | Specifies the version of OneAgent for PaaS module. Default is `latest`, specify `next` for @next version.|
 | verbose | --verbose | enables extended output of plugin processing. --verbose enables verbose mode for all plugins, while verbose option in `serverless.yml` enables verbose output for this plugin only.|
+| exclude | --dt-exclude | exclude given list of functions from instrumentation. Separate function names with comma on command line.
 
 ```yaml
+...
+functions:
+  lambdaTest1:
+    handler: test/first.handler
+
+  lambdaTest2:
+    handler: test/second.handler
+...
 custom:
   serverless-oneagent:
     # enable serverless-oneagent plugin verbose mode
     verbose: true
     # specify @next Dynatrace OneAgent npm module
     npmModuleVersion: next
+    exclude:
+      - lambdaTest2
 ```
 
 ```shell
-serverless deploy --dt-oneagent-module-version=next --dt-oneagent-options='{"dynatraceTagPropertyPath":"headers.x-dynatrace","server":"...","tenant":"...","tenanttoken":"..."}' --verbose
+serverless deploy --dt-oneagent-module-version=next --dt-oneagent-options='{"dynatraceTagPropertyPath":"headers.x-dynatrace","server":"...","tenant":"...","tenanttoken":"..."}' --verbose --dt-exclude=lambdaTest2
 ```
 
 ## Samples
