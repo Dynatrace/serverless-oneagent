@@ -97,6 +97,21 @@ custom:
 serverless deploy --dt-oneagent-module-version=next --dt-oneagent-options='{"dynatraceTagPropertyPath":"headers.x-dynatrace","server":"...","tenant":"...","tenanttoken":"..."}' --verbose --dt-exclude=lambdaTest2
 ```
 
+### Yarn configuration
+
+Serverless plugin installs automatically `@dynatrace/oneagent` dependency at build time which causes a Yarn build error. To work around that build error, manually add `@dynatrace/oneagent` in the `package.json` file
+
+e.g.
+
+```
+"dependencies": {
+        "@dynatrace/oneagent": "latest"
+},
+"devDependencies": {
+        "@dynatrace/serverless-oneagent": "xxx"
+} 
+ ```
+
 ## Samples
 
 The samples folder contains ready to go serverless projects.
