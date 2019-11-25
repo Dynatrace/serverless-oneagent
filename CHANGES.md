@@ -3,6 +3,7 @@
 ## Version 1.0.14
 
 - added capability to exclude functions from instrumentation
+- Node.js 12.x runtime support
 
 ## Version 1.0.13
 

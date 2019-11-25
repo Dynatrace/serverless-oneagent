@@ -34,7 +34,7 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs6.10
+  runtime: nodejs10.x
 
 functions:
   hello:
@@ -107,7 +107,7 @@ The samples folder contains ready to go serverless projects.
 ## Supported provider and runtime environments
 
 + The current plugin version supports following deployments
-  + AWS Lambda with Node.js runtime version 6.x, 8.x and 10.x
+  + AWS Lambda with Node.js runtime version 8.x, 10.x and 12.x
 
 ## Support
 
