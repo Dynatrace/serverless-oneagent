@@ -81,6 +81,7 @@ namespace Serverless {
 		"dt-oneagent-module-version"?: string;
 		"dt-set-dt-lambda-handler"?: boolean;
 		"dt-exclude"?: string;
+		"dt-skip-uninstall"?: boolean;
 	}
 
 	interface Function {
@@ -161,6 +162,11 @@ interface PluginYamlConfig {
 	 * exclude the specified functions from monitoring
 	 */
 	exclude?: string[];
+
+	/**
+	 * skip uninstall will force the plugin to skip the npm uninstall of the OneAgent package
+	 */
+	skipUninstall?: boolean;
 }
 
 // ============================================================================
@@ -255,6 +261,11 @@ interface Config {
 	 * list of functions to exclude from monitoring
 	 */
 	exclude: string[];
+
+	/**
+	 * skip the npm uninstall of the serverless-oneagent, defaults to false
+	 */
+	skipUninstall: boolean;
 }
 
 // ============================================================================
@@ -346,6 +357,9 @@ class DynatraceOneAgentPlugin {
 			// if DT_LAMBDA_HANDLER is supported, prefer over encoding user handler in handler redirect
 			this.config.setDtLambdaHandler = this.config.oneagentNpmModuleSupportsDtLambdaHandler;
 		}
+
+		this.config.skipUninstall =
+			this.options["dt-skip-uninstall"] || ymlConfig.skipUninstall || false;
 
 		// sanity check agent options (if already available - could be still a to be expanded variable)
 		if (this.config.agentOptions.length > 0 && !this.config.agentOptions.startsWith("$")) {
@@ -526,7 +540,10 @@ class DynatraceOneAgentPlugin {
 	private async postProcessPlainServerlessDeployment() {
 		this.updateConfig();
 		await this.rewriteHandlerDefinitions();
-		await this.npmUninstallOneAgentModule();
+
+		if (!this.config.skipUninstall) {
+			await this.npmUninstallOneAgentModule();
+		}
 	}
 
 	/**
@@ -738,7 +755,8 @@ class DynatraceOneAgentPlugin {
 		agentOptions: "",
 		oneagentNpmModuleSupportsDtLambdaHandler: false,
 		setDtLambdaHandler: false,
-		exclude: []
+		exclude: [],
+		skipUninstall: false
 	};
 	private deploymentMode = DeploymentMode.Undetermined;
 	private readonly cannotTailorErrMsg = "could not determine serverless-webpack intermediate files to tailor OneAgent" +
