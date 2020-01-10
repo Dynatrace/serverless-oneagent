@@ -1,5 +1,11 @@
 # Change Log
 
+## Version 1.0.15
+
+- `dt-skip-uninstall` option added
+- updated outdated package dependencies
+- package-lock.json added
+
 ## Version 1.0.14
 
 - added capability to exclude functions from instrumentation

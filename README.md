@@ -73,6 +73,7 @@ serverless deploy --dt-oneagent-options='{"dynatraceTagPropertyPath":"headers.x-
 | npmModuleVersion | --dt-oneagent-module-version=\<version\> | Specifies the version of OneAgent for PaaS module. Default is `latest`, specify `next` for @next version.|
 | verbose | --verbose | enables extended output of plugin processing. --verbose enables verbose mode for all plugins, while verbose option in `serverless.yml` enables verbose output for this plugin only.|
 | exclude | --dt-exclude | exclude given list of functions from instrumentation. Separate function names with comma on command line.
+| skipUninstall  | --dt-skip-uninstall | de-installation of @dynatrace/oneagent module after packaging might interfere with alternative dependency management tools like [lerna](https://github.com/lerna/lerna). This option suppresses the de-installation of @dynatrace/oneagent npm module. |
 
 ```yaml
 ...
@@ -103,13 +104,13 @@ Serverless plugin installs automatically `@dynatrace/oneagent` dependency at bui
 
 e.g.
 
-```
+```yaml
 "dependencies": {
         "@dynatrace/oneagent": "latest"
 },
 "devDependencies": {
         "@dynatrace/serverless-oneagent": "xxx"
-} 
+}
  ```
 
 ## Samples
