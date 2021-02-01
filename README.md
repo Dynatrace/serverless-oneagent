@@ -2,6 +2,15 @@
 
 # ![Dynatrace](res/Dynatrace_Logo.png) <br/> OneAgent Serverless plugin
 
+--- 
+## Depreciation note
+
+**Starting with Dynatrace OneAgent 1.207, Dynatrace offers a dedicated AWS Lambda layer to monitor Node.js based AWS Lambda functions. Please review the [Dynatrace product news](https://www.dynatrace.com/news/blog/dynatrace-extends-distributed-tracing-for-serverless-on-aws-lambda/) and [documentation](https://www.dynatrace.com/support/help/technology-support/cloud-platforms/amazon-web-services/integrations/deploy-oneagent-as-lambda-extension/) to learn more.**
+
+**The new OneAgent deployment scheme voids the necessity of OneAgent Serverless plugin and its development and support will therefore be discontinued.**
+
+---
+
 dynatrace-oneagent is a plugin for [serverless framework](https://github.com/serverless/serverless) which will add Dynatrace monitoring automatically to serverless deployments.
 
 ## Disclaimer
